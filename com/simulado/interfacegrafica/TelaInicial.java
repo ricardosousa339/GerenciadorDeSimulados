@@ -28,7 +28,7 @@ public class TelaInicial extends JFrame{
 
     private JPanel tileEnviarEmail;
 
-    String opcoes[] = {"Questões", "Assuntos", "Gerar", "Enviar"};
+    private String opcoes[] = {"Questões", "Assuntos", "Gerar", "Enviar"};
 
     //'telas' sao as partes visíveis
     private JPanel menuEsquerda;    //menu que da acesso as quatro categorias de operacoes diferentes
@@ -41,12 +41,13 @@ public class TelaInicial extends JFrame{
 
     //cores mais utilizadas no programa
     private Color azulEscuro;
-    private Color azulSuperClaro;
+    private Color rotulosTiles;
 
     //card layout usado para as trocas de tela no inicio
     private CardLayout cartoes;
     private GridBagConstraints posicoes;
 
+    private EmptyBorder bordaTiles;
     private Font fonteTiles;
 
     public TelaInicial(){
@@ -55,7 +56,7 @@ public class TelaInicial extends JFrame{
 
         //inicializacao de todos os componentes possiveis
         azulEscuro = new Color(0, 53, 101);
-        azulSuperClaro = new Color(207, 225, 224);
+        rotulosTiles = new Color(0, 0, 0);
 
         menuEsquerda = new JPanel();
         tileCadastrar = new JPanel(new BorderLayout());
@@ -80,27 +81,42 @@ public class TelaInicial extends JFrame{
         telaGerar = new JPanel(new GridBagLayout());
         telaEnviar = new JPanel(new GridBagLayout());
         posicoes = new GridBagConstraints();
+        bordaTiles = new EmptyBorder(20,15,20,45);
 
+        posicoes.gridx = 0;
+        posicoes.gridy = 0;
+
+        posicoes.anchor = GridBagConstraints.CENTER;
+        posicoes.weightx = 0;
+        posicoes.weighty = 0;
+        posicoes.fill = GridBagConstraints.BOTH;
+        posicoes.insets = new Insets(10,10,10,10);
         //a JList e inicializada com o array de String opcoes
         listMenu = new JList(opcoes);
 
         //a borda da lista e configurada
-        listMenu.setBorder(new EmptyBorder(25,10,0,0));
+        listMenu.setBorder(new EmptyBorder(25,0,0,0));
         //o metodo setCellRenderer recebe um objeto da classe que foi criada especificamente para isso, ela personaliza as celulas do JList como se fossem um JLabel
         listMenu.setCellRenderer(new ColoredCellRenderer());
         //o JPanel da esquerda recebe a lista
         menuEsquerda.add(listMenu);
         menuEsquerda.setBackground(azulEscuro);
         listMenu.setBackground(azulEscuro);
-        listMenu.setFixedCellWidth(140);
+        listMenu.setFixedCellWidth(150);
         listMenu.setFixedCellHeight(35);
 
         cartoes = (CardLayout) principalDireita.getLayout();
 
         //metodos que configuram os tiles de cada tela
         iniciaTelaQuestoes();
+        posicoes.gridx = 0;
+        posicoes.gridy = 0;
         iniciaTelaAssuntos();
+        posicoes.gridx = 0;
+        posicoes.gridy = 0;
         iniciaTelaGerar();
+        posicoes.gridx = 0;
+        posicoes.gridy = 0;
         iniciaTelaEnviar();
 
         //chama os listeners
@@ -112,16 +128,17 @@ public class TelaInicial extends JFrame{
         principalDireita.add("Gerar", telaGerar);
         principalDireita.add("Enviar", telaEnviar);
         //o listener da lista que muda a tela de acordo com a opcao clicada
-        telaQuestoes.setBackground(new Color(230, 230, 230));
-        telaAssuntos.setBackground(new Color(230, 230, 230));
-        telaGerar.setBackground(new Color(230, 230, 230));
-        telaEnviar.setBackground(new Color(230, 230, 230));
+        telaQuestoes.setBackground(new Color(214, 214, 214));
+        telaAssuntos.setBackground(new Color(214, 214, 214));
+        telaGerar.setBackground(new Color(214, 214, 214));
+        telaEnviar.setBackground(new Color(214, 214, 214));
         add(menuEsquerda,BorderLayout.WEST);
         add(principalDireita, BorderLayout.CENTER);
 
         this.setIconImage(new ImageIcon(getClass().getResource("passed-exam.png")).getImage());
         setTitle("Gerenciador de Simulados");
         setSize(900,600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
     }
@@ -139,64 +156,61 @@ public class TelaInicial extends JFrame{
         });
     }
 
-    public void iniciaTelaQuestoes(){
+    private void iniciaTelaQuestoes(){
 
-        //um JLabel com apenas imagem e adicionado ao tile
-        tileCadastrar.add(new JLabel(new ImageIcon(getClass().getResource("cadastrar_icon_white.png"))), BorderLayout.CENTER);
         //o tile com o texto e configurado
-        JLabel cadastrar = new JLabel("Cadastrar");
+        JLabel cadastrar = new JLabel(new ImageIcon(getClass().getResource("cadastrar_icon_black.png")));
+        cadastrar.setText("Cadastrar");
         //outra classe criada e chamada, para identificar o clique, a TileListener. O construtor dela recebe o nome do tile sendo clicado, para identifica-lo
-        tileCadastrar.addMouseListener(new TileListener("Cadastrar", tileCadastrar));
+        tileCadastrar.addMouseListener(new TileListener("Cadastrar", tileCadastrar, cadastrar));
         cadastrar.setFont(fonteTiles);
-        cadastrar.setForeground(Color.WHITE);
+        cadastrar.setForeground(rotulosTiles);
         cadastrar.setBorder(new EmptyBorder(10,25,0,0));
-        tileCadastrar.add(cadastrar, BorderLayout.SOUTH);
-        tileCadastrar.setBorder(new EmptyBorder(15,30,15,30));
+        tileCadastrar.add(cadastrar, BorderLayout.CENTER);
+        tileCadastrar.setBorder(bordaTiles);
 
         //o mesmo e feito nos outros tiles
-        tileListar.add(new JLabel(new ImageIcon(getClass().getResource("listar_icon_white.png"))), BorderLayout.CENTER);
-        tileListar.addMouseListener(new TileListener("Listar", tileListar));
-        JLabel listar = new JLabel("Listar");
+        JLabel listar = new JLabel(new ImageIcon(getClass().getResource("listar_icon_black.png")));
+        tileListar.addMouseListener(new TileListener("Listar", tileListar, listar));
+        listar.setText("Listar");
         listar.setFont(fonteTiles);
-        listar.setForeground(Color.WHITE);
+        listar.setForeground(rotulosTiles);
         listar.setBorder(new EmptyBorder(10,0,0,0));
-        tileListar.add(listar,BorderLayout.SOUTH);
-        tileListar.setBorder(new EmptyBorder(15,50,15,50));
+        tileListar.add(listar,BorderLayout.CENTER);
+        tileListar.setBorder(bordaTiles);
 
-        tileListarPorAssunto.add(new JLabel(new ImageIcon(getClass().getResource("listar_assuntos_icon_white.png"))), BorderLayout.CENTER);
-        tileListarPorAssunto.addMouseListener(new TileListener("ListarPorAssuntos", tileListarPorAssunto));
-        JLabel listarPorAssunto = new JLabel("Listar por assunto");
+        JLabel listarPorAssunto = new JLabel(new ImageIcon(getClass().getResource("listar_assuntos_icon_black.png")));
+        tileListarPorAssunto.addMouseListener(new TileListener("ListarPorAssuntos", tileListarPorAssunto, listarPorAssunto));
+        listarPorAssunto.setText("Listar por assunto");
         listarPorAssunto.setFont(fonteTiles);
-        listarPorAssunto.setForeground(Color.WHITE);
+        listarPorAssunto.setForeground(rotulosTiles);
         listarPorAssunto.setBorder(new EmptyBorder(10,0,0,0));
-        tileListarPorAssunto.add(listarPorAssunto, BorderLayout.SOUTH);
-        tileListarPorAssunto.setBorder(new EmptyBorder(15,30,15,30));
+        tileListarPorAssunto.add(listarPorAssunto, BorderLayout.CENTER);
+        tileListarPorAssunto.setBorder(bordaTiles);
 
-        tileBuscar.add(new JLabel(new ImageIcon(getClass().getResource("buscar_icon_white.png"))), BorderLayout.CENTER);
-        tileBuscar.addMouseListener(new TileListener("Buscar", tileBuscar));
-        JLabel buscar = new JLabel("Buscar");
+        JLabel buscar = new JLabel(new ImageIcon(getClass().getResource("buscar_icon_black.png")));
+        tileBuscar.addMouseListener(new TileListener("Buscar", tileBuscar,buscar));
+        buscar.setText("Buscar");
         buscar.setFont(fonteTiles);
-        buscar.setForeground(Color.WHITE);
+        buscar.setForeground(rotulosTiles);
         buscar.setBorder(new EmptyBorder(10,0,0,0));
-        tileBuscar.add(buscar, BorderLayout.SOUTH);
-        tileBuscar.setBorder(new EmptyBorder(15,50,15,50));
+        tileBuscar.add(buscar, BorderLayout.CENTER);
+        tileBuscar.setBorder(bordaTiles);
 
         //os tiles sao posicionados dentro do gribBag layout atraves do objeto do tipo GridBagConstraints posicoes
-        posicoes.gridx = 0;
-        posicoes.gridy = 0;
-        posicoes.anchor = GridBagConstraints.NORTH;
-        posicoes.fill = GridBagConstraints.BOTH;
-        posicoes.insets = new Insets(10,10,10,10);
 
         telaQuestoes.add(tileCadastrar,posicoes);
         posicoes.gridx = 1;
         posicoes.gridy = 0;
+
         telaQuestoes.add(tileListar, posicoes);
         posicoes.gridx = 0;
         posicoes.gridy = 1;
+
         telaQuestoes.add(tileListarPorAssunto, posicoes);
         posicoes.gridx = 1;
         posicoes.gridy = 1;
+
         telaQuestoes.add(tileBuscar, posicoes);
 
         tileCadastrar.setBackground(TileListener.estadoPadrao);
@@ -205,31 +219,25 @@ public class TelaInicial extends JFrame{
         tileBuscar.setBackground(TileListener.estadoPadrao);
     }
 
-    public void iniciaTelaAssuntos(){
+    private void iniciaTelaAssuntos(){
 
-        tileCadastrarAssunto.add(new JLabel(new ImageIcon(getClass().getResource("cadastrar_icon_white.png"))), BorderLayout.CENTER);
-        JLabel cadastrar = new JLabel("Cadastrar");
-        tileCadastrarAssunto.addMouseListener(new TileListener("CadastrarAssuntos", tileCadastrarAssunto));
+        JLabel cadastrar = new JLabel(new ImageIcon(getClass().getResource("cadastrar_icon_black.png")));
+        cadastrar.setText("Cadastrar");
+        tileCadastrarAssunto.addMouseListener(new TileListener("CadastrarAssuntos", tileCadastrarAssunto, cadastrar));
         cadastrar.setFont(fonteTiles);
-        cadastrar.setForeground(Color.WHITE);
+        cadastrar.setForeground(rotulosTiles);
         cadastrar.setBorder(new EmptyBorder(10,0,0,0));
-        tileCadastrarAssunto.add(cadastrar, BorderLayout.SOUTH);
-        tileCadastrarAssunto.setBorder(new EmptyBorder(20,60,15,60));
+        tileCadastrarAssunto.add(cadastrar, BorderLayout.CENTER);
+        tileCadastrarAssunto.setBorder(bordaTiles);
 
-        tileListarAssunto.add(new JLabel(new ImageIcon(getClass().getResource("listar_icon_white.png"))), BorderLayout.CENTER);
-        tileListarAssunto.addMouseListener(new TileListener("ListarAssuntos", tileListarAssunto));
-        JLabel listar = new JLabel("Listar");
+        JLabel listar = new JLabel(new ImageIcon(getClass().getResource("listar_icon_black.png")));
+        tileListarAssunto.addMouseListener(new TileListener("ListarAssuntos", tileListarAssunto, listar));
+        listar.setText("Listar");
         listar.setFont(fonteTiles);
-        listar.setForeground(Color.WHITE);
+        listar.setForeground(rotulosTiles);
         listar.setBorder(new EmptyBorder(10,0,0,0));
-        tileListarAssunto.add(listar,BorderLayout.SOUTH);
-        tileListarAssunto.setBorder(new EmptyBorder(20,60,15,60));
-
-        posicoes.gridx = 0;
-        posicoes.gridy = 0;
-        posicoes.anchor = GridBagConstraints.NORTH;
-        posicoes.fill = GridBagConstraints.HORIZONTAL;
-        posicoes.insets = new Insets(10,10,10,10);
+        tileListarAssunto.add(listar,BorderLayout.CENTER);
+        tileListarAssunto.setBorder(bordaTiles);
 
         telaAssuntos.add(tileCadastrarAssunto,posicoes);
         posicoes.gridx = 1;
@@ -243,43 +251,38 @@ public class TelaInicial extends JFrame{
 
     }
 
-    public void iniciaTelaGerar(){
-        tileGerarFormulario.add(new JLabel(new ImageIcon(getClass().getResource("formulario_icon_white.png"))), BorderLayout.CENTER);
-        JLabel gerarFormulario = new JLabel("Gerar formulário");
-        tileGerarFormulario.addMouseListener(new TileListener("GerarFormulario", tileGerarFormulario));
+    private void iniciaTelaGerar(){
+
+        JLabel gerarFormulario = new JLabel(new ImageIcon(getClass().getResource("formulario_icon_black.png")));
+        gerarFormulario.setText("Gerar formulário");
+        tileGerarFormulario.addMouseListener(new TileListener("GerarFormulario", tileGerarFormulario, gerarFormulario));
         gerarFormulario.setFont(fonteTiles);
-        gerarFormulario.setForeground(Color.WHITE);
+        gerarFormulario.setForeground(rotulosTiles);
         gerarFormulario.setBorder(new EmptyBorder(10,0,0,0));
-        tileGerarFormulario.add(gerarFormulario, BorderLayout.SOUTH);
-        tileGerarFormulario.setBorder(new EmptyBorder(20,40,15,40));
+        tileGerarFormulario.add(gerarFormulario, BorderLayout.CENTER);
+        tileGerarFormulario.setBorder(bordaTiles);
 
-        tileGerarProva.add(new JLabel(new ImageIcon(getClass().getResource("prova_icon_white.png"))), BorderLayout.CENTER);
-        JLabel gerarProva = new JLabel("Gerar prova");
-        tileGerarProva.addMouseListener(new TileListener("GerarProva", tileGerarProva));
+        JLabel gerarProva = new JLabel(new ImageIcon(getClass().getResource("prova_icon_black.png")));
+        gerarProva.setText("Gerar prova");
+        tileGerarProva.addMouseListener(new TileListener("GerarProva", tileGerarProva, gerarProva));
         gerarProva.setFont(fonteTiles);
-        gerarProva.setForeground(Color.WHITE);
+        gerarProva.setForeground(rotulosTiles);
         gerarProva.setBorder(new EmptyBorder(10,0,0,0));
-        tileGerarProva.add(gerarProva, BorderLayout.SOUTH);
-        tileGerarProva.setBorder(new EmptyBorder(20,40,15,40));
+        tileGerarProva.add(gerarProva, BorderLayout.CENTER);
+        tileGerarProva.setBorder(bordaTiles);
 
-        tileGerarTXT.add(new JLabel(new ImageIcon(getClass().getResource("txt_icon_white.png"))), BorderLayout.CENTER);
-        JLabel gerarTxt = new JLabel("Gerar txt");
-        tileGerarTXT.addMouseListener(new TileListener("GerarTxt", tileGerarTXT));
+        JLabel gerarTxt = new JLabel(new ImageIcon(getClass().getResource("txt_icon_black.png")));
+        gerarTxt.setText("Gerar txt");
+        tileGerarTXT.addMouseListener(new TileListener("GerarTxt", tileGerarTXT, gerarTxt));
         gerarTxt.setFont(fonteTiles);
-        gerarTxt.setForeground(Color.WHITE);
+        gerarTxt.setForeground(rotulosTiles);
         gerarTxt.setBorder(new EmptyBorder(10,0,0,0));
-        tileGerarTXT.add(gerarTxt, BorderLayout.SOUTH);
-        tileGerarTXT.setBorder(new EmptyBorder(20,40,15,40));
+        tileGerarTXT.add(gerarTxt, BorderLayout.CENTER);
+        tileGerarTXT.setBorder(bordaTiles);
 
         tileGerarProva.setBackground(TileListener.estadoPadrao);
         tileGerarFormulario.setBackground(TileListener.estadoPadrao);
         tileGerarTXT.setBackground(TileListener.estadoPadrao);
-
-        posicoes.gridx = 0;
-        posicoes.gridy = 0;
-        posicoes.anchor = GridBagConstraints.NORTH;
-        posicoes.fill = GridBagConstraints.HORIZONTAL;
-        posicoes.insets = new Insets(10,10,10,10);
 
         telaGerar.add(tileGerarFormulario,posicoes);
         posicoes.gridx = 1;
@@ -287,25 +290,32 @@ public class TelaInicial extends JFrame{
         telaGerar.add(tileGerarProva, posicoes);
         posicoes.gridx = 0;
         posicoes.gridy = 1;
+        posicoes.gridwidth = 2;
+
         telaGerar.add(tileGerarTXT, posicoes);
+        posicoes.gridwidth = 1;
     }
 
-    public void iniciaTelaEnviar(){
-        tileEnviarEmail.add(new JLabel(new ImageIcon(getClass().getResource("email_icon_white.png"))), BorderLayout.CENTER);
-        JLabel enviarEmail = new JLabel("Enviar por email");
-        tileEnviarEmail.addMouseListener(new TileListener("EnviarEmail", tileEnviarEmail));
-        enviarEmail.setFont(fonteTiles);
-        enviarEmail.setForeground(Color.WHITE);
-        enviarEmail.setBorder(new EmptyBorder(10,0,0,0));
-        tileEnviarEmail.add(enviarEmail, BorderLayout.SOUTH);
-        tileEnviarEmail.setBorder(new EmptyBorder(20,40,15,40));
-        tileEnviarEmail.setBackground(TileListener.estadoPadrao);
+    private void iniciaTelaEnviar(){
 
-        posicoes.gridx = 0;
-        posicoes.gridy = 0;
-        posicoes.anchor = GridBagConstraints.NORTH;
-        posicoes.fill = GridBagConstraints.HORIZONTAL;
-        posicoes.insets = new Insets(10,10,10,10);
+        bordaTiles = new EmptyBorder(10,10,10,10);
+        JLabel enviarEmail = new JLabel(new ImageIcon(getClass().getResource("email_icon_black.png")));
+        enviarEmail.setText("Email");
+        tileEnviarEmail.addMouseListener(new TileListener("EnviarEmail", tileEnviarEmail, enviarEmail));
+        enviarEmail.setFont(fonteTiles);
+        enviarEmail.setForeground(rotulosTiles);
+        enviarEmail.setBorder(bordaTiles);
+        JTextField email = new JTextField(20);
+        email.setFont(fonteTiles);
+        email.setBorder(BorderFactory.createLineBorder(rotulosTiles, 1));
+        JButton enviar = new JButton();
+        enviar.setIcon(new ImageIcon(getClass().getResource("enviar_icon_black.png")));
+        enviar.setBackground(TileListener.semClicar);
+        tileEnviarEmail.add(enviarEmail, BorderLayout.NORTH);
+        tileEnviarEmail.add(email, BorderLayout.CENTER);
+        tileEnviarEmail.add(enviar, BorderLayout.EAST);
+        tileEnviarEmail.setBorder(bordaTiles);
+        tileEnviarEmail.setBackground(TileListener.estadoPadrao);
 
         telaEnviar.add(tileEnviarEmail, posicoes);
 

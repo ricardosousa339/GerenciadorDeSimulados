@@ -15,13 +15,14 @@ public class ColoredCellRenderer extends DefaultListCellRenderer {
         setEnabled(list.isEnabled());
         setFont(list.getFont());
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.lightGray));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.lightGray));
 //        setIcon(new ImageIcon(getClass().getResource("/imagens/photo.png")));
 
         if (isSelected) {
             setBackground(new Color(9, 38, 77));
             setForeground(new Color(228, 244, 255));
-            setFont(new Font(Font.SANS_SERIF,Font.PLAIN,16));
+            //setFont(new Font(Font.SANS_SERIF,Font.PLAIN,16));
+            setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.lightGray));
         }
         else {
             setBackground(list.getBackground());
